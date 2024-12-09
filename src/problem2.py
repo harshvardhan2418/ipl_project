@@ -7,30 +7,31 @@
 import csv
 import matplotlib.pyplot as plt
 
-def read_deliveryfile():
-    delivery_file = open('ipl_data/deliveries.csv', mode='r')
-    reader = csv.DictReader(delivery_file)
+def read_the_file_ipl_data(path):
+    delivery_file = open(path, mode='r')
+    reader = csv.DictReader(delivery_file) 
     return reader
-def batsmen_with_runs():
-    batsman_runs = {}
-    for row in read_deliveryfile():
+
+def get_batsmen_runs_for_rcb(read_the_file):
+    batsmen_runs_for_rcb = {}
+    for row in read_the_file:
         if row['batting_team'] == 'Royal Challengers Bangalore':
             batsman = row['batsman']
             runs = int(row['batsman_runs'])  
-            if batsman in batsman_runs:
-                batsman_runs[batsman] += runs 
+            if batsman in batsmen_runs_for_rcb:
+                batsmen_runs_for_rcb[batsman] += runs 
             else:
-                batsman_runs[batsman] = runs
-    return batsman_runs
+                batsmen_runs_for_rcb[batsman] = runs
+    return batsmen_runs_for_rcb
 
-def top_ten_batsmen():
-    top_ten= dict(sorted(batsmen_with_runs().items(), key=lambda x: x[1], reverse=True)[:10])
-    return top_ten
+def get_top_ten_batsmen_for_rcb(batsmen_runs_for_rcb):
+    top_ten_batsmen_for_rcb= dict(sorted(batsmen_runs_for_rcb.items(), key=lambda x: x[1], reverse=True)[:10])
+    return top_ten_batsmen_for_rcb
 
-def plot_top_ten_batsmen():
-    top_ten_bat=top_ten_batsmen()
-    batsmen=top_ten_bat.keys() 
-    runs=top_ten_bat.values()
+
+def plot_top_ten_batsmen(top_ten_batsmen_for_rcb):
+    batsmen=top_ten_batsmen_for_rcb.keys() 
+    runs=top_ten_batsmen_for_rcb.values()
     plt.bar(batsmen, runs, color='purple')
     plt.xlabel('Total Runs', fontsize=20)
     plt.ylabel('Batsman', fontsize=20)
@@ -38,4 +39,10 @@ def plot_top_ten_batsmen():
     plt.xticks(rotation=45)  
     plt.yticks(fontsize=14)
     plt.show()
-plot_top_ten_batsmen()
+    
+def main():
+    read_the_file=read_the_file_ipl_data('ipl_data/deliveries.csv') 
+    batsmen_runs_for_rcb=get_batsmen_runs_for_rcb(read_the_file)
+    top_ten_batsmen_for_rcb=get_top_ten_batsmen_for_rcb(batsmen_runs_for_rcb) 
+    plot_top_ten_batsmen(top_ten_batsmen_for_rcb) 
+main()

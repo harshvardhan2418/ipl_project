@@ -10,24 +10,23 @@
 import csv
 import matplotlib.pyplot as plt 
 
-def read_matches_file():
-    delivery_file = open('ipl_data/matches.csv', mode='r')
+def read_matches_file(path):
+    delivery_file = open(path, mode='r')
     reader = csv.DictReader(delivery_file)
     return reader
 
-def no_of_matches_played_for_all_years():
+def get_no_of_matches_played_for_all_years(read_file):
     no_of_matches_played_for_all_years={}
-    for each_row in read_matches_file(): 
+    for each_row in read_file: 
         if each_row['season'] not in no_of_matches_played_for_all_years: 
             no_of_matches_played_for_all_years[each_row['season']]=1 
         else: 
             no_of_matches_played_for_all_years[each_row['season']]+=1   
     return no_of_matches_played_for_all_years
 
-def plot_graph():
-    dic=no_of_matches_played_for_all_years()
-    years=list(dic.keys()) 
-    no_of_matches=list(dic.values()) 
+def plot_graph(no_of_matches_played_for_all_years):
+    years=list(no_of_matches_played_for_all_years.keys()) 
+    no_of_matches=list(no_of_matches_played_for_all_years.values()) 
     plt.bar(years, no_of_matches, color='purple')
     plt.xlabel('seasons')
     plt.ylabel('no of matches')
@@ -37,4 +36,9 @@ def plot_graph():
     # Show the plot
     plt.tight_layout()  # Adjust layout to prevent clipping of labels
     plt.show()
-plot_graph()
+ 
+def main():
+    read_file=read_matches_file('ipl_data/matches.csv')
+    no_of_matches_played_for_all_years=get_no_of_matches_played_for_all_years(read_file)
+    plot_graph(no_of_matches_played_for_all_years) 
+main()
